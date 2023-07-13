@@ -6,8 +6,8 @@ let lastErrorMessageUnableToSendMoney = 0;
 let lastErrorMessageUnableToRetriveBNBBalance = 0;
 let lastAccountInfo = 0;
 let lastRefill = 0;
-const refillAmountHigher = 12; // 50
-const refillAmountLower = 6; // 25
+const refillAmountHigher = 50;
+const refillAmountLower = 25; 
 const twentyFourHours = 24 * 3600000;
 const twentyThreeHours = 23 * 3600000;
 const twelveHours = 12 * 3600000;
@@ -57,7 +57,7 @@ const checkAndRefillBinanceAccount = () => {
                 }
             });
         }
-    }, twentySeconds);
+    }, twentyMinutes);
 }
 
 const refillService = {
