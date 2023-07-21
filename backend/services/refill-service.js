@@ -53,7 +53,6 @@ const checkAndRefillBinanceAccount = () => {
         }
 
         let day = new Date();
-        console.log(day.getHours());
         if (lastAccountInfo + twentyThreeHours < Date.now() && day.getHours() === 7) {
             binanceService.getBNBBalance().then(async (balance) => {
                 await emailService.sendBalanceEmailAsync(balance.balancePLN);
