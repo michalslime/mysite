@@ -51,6 +51,7 @@ const sendSuccessEmail = (amountPLN, balancePLN) => {
 const sendStartMessage = () => {
     const date = new Date();
     mailOptions.subject = `[${date.toLocaleString("pl-PL")}] MySite Backend started working`;
+    mailOptions.html = `<a href="${baseUrl}/send-email-with-balance/">Send me current balance</p>`
 
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {

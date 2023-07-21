@@ -72,4 +72,3 @@ server.listen(port, () => {
 
 refillService.checkAndRefillBinanceAccount();
 emailService.sendStartMessage();
-emailService.sendBalanceEmailAsync();
