@@ -28,6 +28,29 @@ app.get('/binance-card-balance/', async (req, res) => {
     }
 });
 
+app.get('/wallet/bnb/', async (req, res) => {
+    try {
+        const result = await walletService.getBNBBalance();
+
+        res.json(result);
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+app.get('/send-email-with-balance/', async (req, res) => {
+    try {
+        const balance = await binanceService.getBNBBalance();
+        await emailService.sendBalanceEmailAsync(balance.balancePLN);
+
+        res.sendStatus(200);
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 app.put('/send-money-to-binance/', async (req, res) => {
     try {
         if (lastEmergencyRefill + twentyFourHours < Date.now()) {
@@ -49,3 +72,4 @@ server.listen(port, () => {
 
 refillService.checkAndRefillBinanceAccount();
 emailService.sendStartMessage();
+emailService.sendBalanceEmailAsync();

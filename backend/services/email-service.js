@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
 
+const baseUrl = process.env.APP_BASE_URL;
+
 const transporter = nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
     port: 587,
@@ -15,22 +17,27 @@ const mailOptions = {
     to: 'michal.s.pub@gmail.com',
 };
 
-const sendBalanceEmail = (amount) => {
-    const date = new Date();
-    mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Stan konta ${amount} USD`;
-
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+const sendBalanceEmailAsync = (amountPLN) => {
+    return new Promise((resolve, reject) => {
+        const date = new Date();
+        mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Stan konta ${amountPLN} PLN`;
+        mailOptions.html = `<a href="${baseUrl}/send-email-with-balance/">Send me current balance</p>`
+    
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                reject();
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve();
+            }
+        });
+    })
 }
 
-const sendSuccessEmail = (amount, balance) => {
+const sendSuccessEmail = (amountPLN, balancePLN) => {
     const date = new Date();
-    mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Uzupelniono konto o ${amount} USD, Stan konta: ${amount + balance}`;
+    mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Uzupelniono konto o ${amountPLN} PLN, Stan konta: ${amountPLN + balancePLN}`;
 
     transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
@@ -69,7 +76,7 @@ const sendErrorEmail = (message) => {
 
 const emailService = {
     sendSuccessEmail,
-    sendBalanceEmail,
+    sendBalanceEmailAsync,
     sendStartMessage,
     sendErrorEmail
 };

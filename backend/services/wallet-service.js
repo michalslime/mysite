@@ -1,10 +1,14 @@
 const { ethers, FixedNumber } = require("ethers");
 const binanceService = require('../services/binance-service');
+const calculator = require('../utils/calculator');
 
-const sendMoneyToBinance = async (amountUSD) => {
+const sendMoneyToBinance = async (amountPLN) => {
     return new Promise(async (resolve, reject) => {
         const price = await binanceService.getBNBPrice();
 
+        const usdPLNPrice = await binanceService.getUSDPLN();
+        const amountUSD = amountPLN / usdPLNPrice;
+        
         const bnb = amountUSD / price;
 
         const valueWei = ethers.parseUnits(bnb.toString(), "ether");
@@ -28,9 +32,23 @@ const sendMoneyToBinance = async (amountUSD) => {
                 resolve();
             })
             .catch(() => reject('Something rong'));
-
-
     })
+}
+
+const getBNBBalance = async () => {
+    const provider = new ethers.JsonRpcProvider("https://bsc-dataseed.binance.org");
+
+    const balance = await provider.getBalance("0x045Ab0dff3A51f17588fceb5dAcE31beF1Ff3a00");
+
+    const exchangeRate = await binanceService.getBNBPrice();
+
+    console.log(exchangeRate);
+
+    const balanceUsd = calculator.calculateAmountUsd(balance.toString(), exchangeRate)
+
+    const usdPLNPrice = await binanceService.getUSDPLN();
+
+    return (balanceUsd * usdPLNPrice).toString();
 }
 
 const calculateGas = (receipt) => {
@@ -44,7 +62,8 @@ const calculateGas = (receipt) => {
 }
 
 const walletService = {
-    sendMoneyToBinance
+    sendMoneyToBinance,
+    getBNBBalance
 };
 
 module.exports = walletService;

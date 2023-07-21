@@ -9,7 +9,6 @@ const getBNBBalance = () => {
     return new Promise((resolve, reject) => {
         const client = new Spot(apiKey, apiSecret)
 
-        console.log('Retrieving BNB balance...');
         client.userAsset({
             asset: "BNB"
         }).then(result => {
@@ -18,13 +17,13 @@ const getBNBBalance = () => {
             if (result && result.data && result.data[0]) {
                 balance = result.data[0].free;
             }
-
-            console.log('Balance: ' + balance);
-
-            console.log('Retrieving BNB price...');
             getBNBPrice().then((price) => {
-                console.log('Price: ' + price);
-                resolve({ balance, balanceUSD: balance * price });
+                getUSDPLN().then((usdPLNPrice) => {
+                    console.log(usdPLNPrice)
+                    resolve({ balance, balanceUSD: balance * price, balancePLN: balance * price * usdPLNPrice});
+                }).catch(() => {
+                    reject("Unable to retrive USDPLN price");
+                })
             }).catch(() => {
                 reject("Unable to retrive BNB price");
             })
@@ -42,9 +41,16 @@ const getBNBPrice = () => {
     });
 }
 
+const getUSDPLN = () => {
+    return new Promise((resolve, reject) => {
+        resolve(4); // USDPLN is generally around 4 zł, this should be updated if price goes below 4 permamently
+    });
+}
+
 const binanceService = {
     getBNBBalance,
-    getBNBPrice
+    getBNBPrice,
+    getUSDPLN
 };
 
 module.exports = binanceService;
