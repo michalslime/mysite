@@ -28,6 +28,17 @@ app.get('/binance-card-balance/', async (req, res) => {
     }
 });
 
+app.get('/binance-card-balance/pln', async (req, res) => {
+    try {
+        const result = await binanceService.getBNBBalance();
+
+        res.json(result.balancePLN);
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 app.get('/wallet/bnb/pln', async (req, res) => {
     try {
         const result = await walletService.getBNBBalance();
