@@ -28,7 +28,7 @@ app.get('/binance-card-balance/', async (req, res) => {
     }
 });
 
-app.get('/wallet/bnb/', async (req, res) => {
+app.get('/wallet/bnb/pln', async (req, res) => {
     try {
         const result = await walletService.getBNBBalance();
 
