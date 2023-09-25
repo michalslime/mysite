@@ -19,7 +19,7 @@ const getBNBBalance = () => {
             }
             getBNBPrice().then((price) => {
                 getUSDPLN().then((usdPLNPrice) => {
-                    console.log(usdPLNPrice)
+                    console.log('Currently USDPLN ex rate: ' + usdPLNPrice)
                     resolve({ balance, balanceUSD: balance * price, balancePLN: balance * price * usdPLNPrice});
                 }).catch(() => {
                     reject("Unable to retrive USDPLN price");
@@ -43,7 +43,7 @@ const getBNBPrice = () => {
 
 const getUSDPLN = () => {
     return new Promise((resolve, reject) => {
-        resolve(4); // USDPLN is generally around 4 zł, this should be updated if price goes below 4 permamently
+        resolve(4.2); // USDPLN is generally around 4.2 zł, this should be updated if price goes below 4 permamently
     });
 }
 

@@ -77,9 +77,22 @@ app.put('/send-money-to-binance/', async (req, res) => {
     }
 });
 
+app.put('/everyday-refill/', async (req, res) => {
+    try {
+        await refillService.everydayRefill();
+        res.sendStatus(200);
+    } catch (e) {
+        console.log(e);
+
+        // res.statusMessage = e.message;
+        // res.status(e.code).end();
+
+        res.status(e.code).end(e.message);
+    }
+});
+
 server.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
 
-refillService.checkAndRefillBinanceAccount();
 emailService.sendStartMessage();

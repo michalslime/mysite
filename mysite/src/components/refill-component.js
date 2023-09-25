@@ -5,6 +5,7 @@ import utils from '../services/utils';
 function RefillComponent() {
     const [balancePLN, setBalancePLN] = useState(0);
     const [michalBNBBalancePLN, setMichalBNBBalancePLN] = useState(0);
+    const [everydayRefillText, setEverydayRefillText] = useState('Uzupełnienie codzienne');
 
     useEffect(() => {
         binanceService.getBinanceBalanceUSD().then((balance) => {
@@ -16,10 +17,18 @@ function RefillComponent() {
         });
     });
 
+    const everydayRefill = () => {
+        binanceService.everydayRefill().catch(err => {
+            const message = utils.extractErrorMessage(err);
+            setEverydayRefillText(message);
+        });
+    }
+
     return (
         <>
             <div className='card'>Binance Credid card: {balancePLN} PLN</div>
             <div className='card'>MichalBNB: {michalBNBBalancePLN} PLN</div>
+            <div className='card' onClick={() => everydayRefill()}>{everydayRefillText}</div>
         </>
     )
 }

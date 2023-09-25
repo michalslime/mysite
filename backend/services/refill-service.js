@@ -6,6 +6,7 @@ let lastErrorMessageUnableToSendMoney = 0;
 let lastErrorMessageUnableToRetriveBNBBalance = 0;
 let lastAccountInfo = 0;
 let lastRefill = 0;
+let lastEverydayRefillDay = 0;
 const refillAmountHigher = 200;
 const refillAmountLower = 100;
 const twentyFourHours = 24 * 3600000;
@@ -13,6 +14,7 @@ const twentyThreeHours = 23 * 3600000;
 const twelveHours = 12 * 3600000;
 const twentySeconds = 20000;
 const twentyMinutes = 1200000;
+const everydayRefillAmount = 70;
 
 const checkAndRefillBinanceAccount = () => {
     setInterval(async () => {
@@ -62,8 +64,39 @@ const checkAndRefillBinanceAccount = () => {
     }, twentySeconds);
 }
 
+const everydayRefill = async () => {
+    return new Promise(async (resolve, reject) => {
+        const date = new Date();
+
+        const day = date.getDate();
+
+        if (day === lastEverydayRefillDay) {
+            reject('You already refilled today');
+        }
+
+        const balance = await binanceService.getBNBBalance();
+
+        if (balance.balancePLN < everydayRefillAmount) {
+            const diff = everydayRefillAmount - balance.balancePLN;
+            const refillAmount = diff < 20 ? 20 : diff;
+
+            await walletService.sendMoneyToBinance(refillAmount);
+
+            lastEverydayRefillDay = day;
+
+            resolve();
+        } else {
+            reject({
+                code: 403,
+                message: 'You have enough money'
+            });
+        }
+    });
+}
+
 const refillService = {
-    checkAndRefillBinanceAccount
+    checkAndRefillBinanceAccount,
+    everydayRefill
 };
 
 module.exports = refillService;

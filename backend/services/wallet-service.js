@@ -31,7 +31,7 @@ const sendMoneyToBinance = async (amountPLN) => {
             .then((receipt) => {
                 resolve();
             })
-            .catch(() => reject('Something rong'));
+            .catch(() => reject('Something wrong'));
     })
 }
 

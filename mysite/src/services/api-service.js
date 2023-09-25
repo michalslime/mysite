@@ -20,10 +20,15 @@ const sendMoneyToBinance = () => {
     return axios.put(`${baseUrl}/send-money-to-binance/`);
 }
 
+const everydayRefill = () => {
+    return axios.put(`${baseUrl}/everyday-refill/`).then((response) => response.data);
+}
+
 const apiService = {
     getMichalBNBBalancePLN,
     getBinanceBalanceUSD,
-    sendMoneyToBinance
+    sendMoneyToBinance,
+    everydayRefill
 };
 
 export default apiService;
