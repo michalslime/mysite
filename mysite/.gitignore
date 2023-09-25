@@ -9,7 +9,8 @@
 /coverage
 
 # production
-/build
+# commented out, because we deploy build folder onto DigitalOcean - its for free if you commit in the already compiled code
+#/build
 
 # misc
 .DS_Store
