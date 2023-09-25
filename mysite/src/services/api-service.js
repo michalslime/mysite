@@ -8,6 +8,10 @@ const jsonHeaders = {
     }
 };
 
+const getMichalBNBBalancePLN = () => {
+    return axios.get(`${baseUrl}/wallet/bnb/pln`).then((response) => response.data);
+}
+
 const getBinanceBalanceUSD = () => {
     return axios.get(`${baseUrl}/binance-card-balance/`).then((response) => response.data);
 }
@@ -17,6 +21,7 @@ const sendMoneyToBinance = () => {
 }
 
 const apiService = {
+    getMichalBNBBalancePLN,
     getBinanceBalanceUSD,
     sendMoneyToBinance
 };
