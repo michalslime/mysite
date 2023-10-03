@@ -24,6 +24,7 @@ function RefillComponent() {
     });
 
     const everydayRefill = () => {
+        classes.everyday = classes.everyday.slice(0, 1);
         setEverydayRefillText('Wykonuję operację');
         binanceService.everydayRefill().then(() => {
             classes.everyday.push('success');
@@ -41,7 +42,7 @@ function RefillComponent() {
 
     return (
         <>
-            <div className='card'>Binance Credid card: {balancePLN} PLN</div>
+            <div className='card'>Binance card: {balancePLN} PLN</div>
             <div className='card'>MichalBNB: {michalBNBBalancePLN} PLN</div>
             <div className='card' onClick={() => navigate('/')}>Wstecz</div>
             <div className={getClasses('everyday')} onClick={() => everydayRefill()}>{everydayRefillText}</div>
