@@ -14,7 +14,7 @@ const twentyThreeHours = 23 * 3600000;
 const twelveHours = 12 * 3600000;
 const twentySeconds = 20000;
 const twentyMinutes = 1200000;
-const everydayRefillAmount = 60;
+const everydayRefillAmount = 100;
 const minimumRefillAmount = 20;
 
 const checkAndRefillBinanceAccount = () => {
@@ -72,7 +72,10 @@ const everydayRefill = async () => {
         const day = date.getDate();
 
         if (day === lastEverydayRefillDay) {
-            reject('You already refilled today');
+            reject({
+                code: 403,
+                message: 'You already refilled today'
+            });
         }
 
         const balance = await binanceService.getBNBBalance();
