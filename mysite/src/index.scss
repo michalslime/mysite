@@ -33,4 +33,9 @@ code {
   &.success {
     background-color: lightgreen;
   }
+
+  &.disappear {
+    opacity: 0;
+    transition: opacity 10s;
+  }
 }
