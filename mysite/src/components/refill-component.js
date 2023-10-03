@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import binanceService from '../services/api-service';
 import utils from '../services/utils';
 
+const classes = {
+    everyday: ['card']
+}
+
 function RefillComponent() {
     const [balancePLN, setBalancePLN] = useState(0);
     const [michalBNBBalancePLN, setMichalBNBBalancePLN] = useState(0);
     const [everydayRefillText, setEverydayRefillText] = useState('Uzupełnienie codzienne');
-    const [classes, setClasses] = useState({
-        everyday: ['card']
-    });
 
     useEffect(() => {
         binanceService.getBinanceBalanceUSD().then((balance) => {
@@ -21,8 +22,10 @@ function RefillComponent() {
     });
 
     const everydayRefill = () => {
+        setEverydayRefillText('Wykonuję operację');
         binanceService.everydayRefill().then(() => {
             classes.everyday.push('success');
+            setEverydayRefillText('Wykonano, pieniądze dotrą w ciągu 5 min');
         }).catch(err => {
             const message = utils.extractErrorMessage(err);
             classes.everyday.push('error');

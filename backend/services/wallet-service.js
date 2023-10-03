@@ -25,10 +25,11 @@ const sendMoneyToBinance = async (amountPLN) => {
             value: valueWei
         })
             .then(tx => {
-                console.log('Sending...');
+                console.log(`${valueWei}, sending...`);
                 return tx.wait()
             })
             .then((receipt) => {
+                console.log('Sent!');
                 resolve();
             })
             .catch(() => reject('Something wrong'));

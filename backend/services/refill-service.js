@@ -14,7 +14,8 @@ const twentyThreeHours = 23 * 3600000;
 const twelveHours = 12 * 3600000;
 const twentySeconds = 20000;
 const twentyMinutes = 1200000;
-const everydayRefillAmount = 90;
+const everydayRefillAmount = 45;
+const minimumRefillAmount = 10;
 
 const checkAndRefillBinanceAccount = () => {
     setInterval(async () => {
@@ -78,7 +79,7 @@ const everydayRefill = async () => {
 
         if (balance.balancePLN < everydayRefillAmount) {
             const diff = everydayRefillAmount - balance.balancePLN;
-            const refillAmount = diff < 20 ? 20 : diff;
+            const refillAmount = diff < minimumRefillAmount ? minimumRefillAmount : diff;
 
             await walletService.sendMoneyToBinance(refillAmount);
 
