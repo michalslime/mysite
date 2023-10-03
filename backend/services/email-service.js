@@ -22,7 +22,7 @@ const sendBalanceEmailAsync = (amountPLN) => {
         const date = new Date();
         mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Stan konta ${amountPLN} PLN`;
         mailOptions.html = `<a href="${baseUrl}/send-email-with-balance/">Send me current balance</p>`
-    
+
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log(error);
@@ -35,51 +35,63 @@ const sendBalanceEmailAsync = (amountPLN) => {
     })
 }
 
-const sendSuccessEmail = (amountPLN, balancePLN) => {
-    const date = new Date();
-    mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Uzupelniono konto o ${amountPLN} PLN, Stan konta: ${amountPLN + balancePLN}`;
+const sendSuccessEmailAsync = (amountPLN, balancePLN) => {
+    return new Promise((resolve, reject) => {
+        const date = new Date();
+        mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Uzupelniono konto o ${amountPLN} PLN, Stan konta: ${amountPLN + balancePLN}`;
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                reject();
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve();
+            }
+        });
+    })
 }
 
-const sendStartMessage = () => {
-    const date = new Date();
-    mailOptions.subject = `[${date.toLocaleString("pl-PL")}] MySite Backend started working`;
-    mailOptions.html = `<a href="${baseUrl}/send-email-with-balance/">Send me current balance</p>`
+const sendStartMessageAsync = () => {
+    return new Promise((resolve, reject) => {
+        const date = new Date();
+        mailOptions.subject = `[${date.toLocaleString("pl-PL")}] MySite Backend started working`;
+        mailOptions.html = `<a href="${baseUrl}/send-email-with-balance/">Send me current balance</p>`
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                reject();
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve();
+            }
+        });
+    })
 }
 
-const sendErrorEmail = (message) => {
-    const date = new Date();
-    mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Error! ${message}`;
+const sendErrorEmailAsync = (message) => {
+    return new Promise((resolve, reject) => {
+        const date = new Date();
+        mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Error! ${message}`;
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                reject();
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve();
+            }
+        });
+    })
 }
 
 const emailService = {
-    sendSuccessEmail,
+    sendSuccessEmailAsync,
     sendBalanceEmailAsync,
-    sendStartMessage,
-    sendErrorEmail
+    sendStartMessageAsync,
+    sendErrorEmailAsync
 };
 
 module.exports = emailService;

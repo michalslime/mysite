@@ -24,22 +24,22 @@ const checkAndRefillBinanceAccount = () => {
 
                 if (balance.balancePLN < refillAmountHigher) {
                     if (balance.balancePLN > refillAmountLower) {
-                        walletService.sendMoneyToBinance(refillAmountLower).then(() => {
-                            emailService.sendSuccessEmail(refillAmountLower, balance.balancePLN);
+                        walletService.sendMoneyToBinance(refillAmountLower).then(async () => {
+                            await emailService.sendSuccessEmailAsync(refillAmountLower, balance.balancePLN);
                             lastRefill = Date.now();
-                        }).catch((e) => {
+                        }).catch(async (e) => {
                             if (lastErrorMessageUnableToSendMoney + twelveHours < Date.now()) {
-                                emailService.sendErrorEmail('Unable to send money to Binance')
+                                await emailService.sendErrorEmail('Unable to send money to Binance')
                                 lastErrorMessageUnableToSendMoney = Date.now();
                             }
                         });
                     } else if (balance.balancePLN < refillAmountLower) {
-                        walletService.sendMoneyToBinance(refillAmountHigher).then(() => {
-                            emailService.sendSuccessEmail(refillAmountHigher, balance.balancePLN);
+                        walletService.sendMoneyToBinance(refillAmountHigher).then(async () => {
+                            await emailService.sendSuccessEmailAsync(refillAmountHigher, balance.balancePLN);
                             lastRefill = Date.now();
-                        }).catch((e) => {
+                        }).catch(async (e) => {
                             if (lastErrorMessageUnableToSendMoney + twelveHours < Date.now()) {
-                                emailService.sendErrorEmail('Unable to send money to Binance')
+                                await emailService.sendErrorEmailAsync('Unable to send money to Binance')
                                 lastErrorMessageUnableToSendMoney = Date.now();
                             }
                         });
@@ -47,9 +47,9 @@ const checkAndRefillBinanceAccount = () => {
                 } else {
                     console.log('Binance credit card has enough money');
                 }
-            }).catch((e) => {
+            }).catch(async (e) => {
                 if (lastErrorMessageUnableToRetriveBNBBalance + twelveHours < Date.now()) {
-                    emailService.sendErrorEmail('Unable to retrieve BNB balance');
+                    await emailService.sendErrorEmailAsync('Unable to retrieve BNB balance');
                     lastErrorMessageUnableToRetriveBNBBalance = Date.now();
                 }
             });
