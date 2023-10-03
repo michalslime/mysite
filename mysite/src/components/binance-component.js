@@ -13,7 +13,7 @@ function BinanceComponent() {
 
     return (
         <>
-            <div className='card'>Binance Credid card: {balancePLN} PLN</div>
+            <div className='card'>Binance card: {balancePLN} PLN</div>
         </>
     )
 }

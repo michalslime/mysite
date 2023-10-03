@@ -25,4 +25,12 @@ code {
   background-color: lightgray;
   margin-bottom: 20px;
   cursor: grab;
+
+  &.error {
+    background-color: red;
+  }
+
+  &.success {
+    background-color: lightgreen;
+  }
 }
