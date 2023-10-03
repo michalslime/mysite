@@ -56,7 +56,8 @@ function RefillComponent() {
     };
 
     const urgentRefill = () => {
-
+        classes.urgent.push('error');
+        setUrgentText('Nie działa na razie');
     }
 
     return (
@@ -65,14 +66,14 @@ function RefillComponent() {
             <div className='card'>MichalBNB: {michalBNBBalancePLN} PLN</div>
             <div className='card' onClick={() => navigate('/')}>Wstecz</div>
             <div className={getClasses('everyday')} onClick={() => everydayRefill()}>{everydayRefillText}</div>
-            {!checked && <div className={getClasses('urgentCheckbox')}>
+            {!checked && <div className={getClasses('urgentCheckbox')} onClick={() => handleChange()} >
                 <label>
                     {showUrgentCheckbox && <input type="checkbox"
                         checked={checked}
-                        onChange={handleChange} />}{' '}
+                    />}{' '}
                     {urgentCheckboxText}
                 </label>
-            </div>}
+            </div >}
             {checked && <div className={getClasses('urgent')} onClick={() => urgentRefill()}>{urgentText}</div>}
         </>
     )
