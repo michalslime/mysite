@@ -14,8 +14,8 @@ const twentyThreeHours = 23 * 3600000;
 const twelveHours = 12 * 3600000;
 const twentySeconds = 20000;
 const twentyMinutes = 1200000;
-const everydayRefillAmount = 45;
-const minimumRefillAmount = 10;
+const everydayRefillAmount = 60;
+const minimumRefillAmount = 20;
 
 const checkAndRefillBinanceAccount = () => {
     setInterval(async () => {
