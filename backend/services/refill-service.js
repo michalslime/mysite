@@ -94,11 +94,13 @@ const everydayRefill = async () => {
             lastEverydayRefillDay = day;
 
             resolve();
+            return;
         } else {
             reject({
                 code: 403,
                 message: 'You have enough money'
             });
+            return;
         }
     });
 }
@@ -110,6 +112,8 @@ const urgentRefill = () => {
                 code: 403,
                 message: 'You already started urgent refill'
             });
+
+            return;
         }
 
         refillService.urgentRefillStarted = true;
@@ -119,10 +123,12 @@ const urgentRefill = () => {
         urgentRefills = urgentRefills.filter(x => timestampNow - oneMonth < x);
 
         if (urgentRefills.length > 1) {
+            const nextPossibleUrgentRefillDate = new Date(urgentRefills[0] + oneMonth);
             reject({
                 code: 403,
-                message: 'You already used urgent refills twice in past 31 days'
+                message: 'You already used urgent refills twice in past 31 days, next possible urgent refill date: ' + nextPossibleUrgentRefillDate.toLocaleDateString()
             });
+            return;
         }
 
         const walletBalance = await walletService.getBNBBalance();
@@ -132,8 +138,10 @@ const urgentRefill = () => {
                 code: 403,
                 message: 'You have not enough money on Wallet'
             });
+            return;
         }
 
+        console.log('Preparing timeout...');
         urgentRefillTimeoutId = setTimeout(async () => {
             urgentRefills.push(timestampNow);
             urgentRefillTimeoutId = undefined;
@@ -142,6 +150,7 @@ const urgentRefill = () => {
         }, twentySeconds); // MSTODO: change to 15 minutes
 
         resolve();
+        return;
     });
 }
 
@@ -152,6 +161,7 @@ const cancelUrgentRefill = () => {
                 code: 403,
                 message: 'There is no urgent refill in progress'
             });
+            return;
         }
 
         clearTimeout(urgentRefillTimeoutId);
