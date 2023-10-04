@@ -33,6 +33,10 @@ function RefillComponent() {
 
         binanceService.getTimeouts().then((data) => {
             setUrgentRefillInProgress(data.urgentRefillTimeout);
+
+            if (data.urgentRefillTimeout) {
+                setUrgentText('Awaryjne uzupełnienie w toku...');
+            }
         });
     }, []);
 
@@ -93,7 +97,7 @@ function RefillComponent() {
             <div className='card'>MichalBNB: {michalBNBBalancePLN} PLN</div>
             <div className='card' onClick={() => navigate('/')}>Wstecz</div>
             <div className={getClasses('everyday')} onClick={() => everydayRefill()}>{everydayRefillText}</div>
-            {!checked && <div className={getClasses('urgentCheckbox')} onClick={() => handleChange()} >
+            {!checked && !urgentRefillInProgress && <div className={getClasses('urgentCheckbox')} onClick={() => handleChange()} >
                 <label>
                     {showUrgentCheckbox && <input type="checkbox"
                         checked={checked}
@@ -101,7 +105,7 @@ function RefillComponent() {
                     {urgentCheckboxText}
                 </label>
             </div >}
-            {checked && <div className={getClasses('urgent')} onClick={() => urgentRefill()}>{urgentText}</div>}
+            {checked || urgentRefillInProgress && <div className={getClasses('urgent')} onClick={() => urgentRefill()}>{urgentText}</div>}
             {urgentRefillInProgress && <div className={getClasses('urgentRefillInProgress')} onClick={() => cancelUrgentRefill()}> {cancelUrgentText}</div>}
         </>
     )
