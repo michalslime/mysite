@@ -128,6 +128,7 @@ const urgentRefill = () => {
                 code: 403,
                 message: 'You already used urgent refills twice in past 31 days, next possible urgent refill date: ' + nextPossibleUrgentRefillDate.toLocaleDateString()
             });
+            refillService.urgentRefillStarted = false;
             return;
         }
 
@@ -138,6 +139,7 @@ const urgentRefill = () => {
                 code: 403,
                 message: 'You have not enough money on Wallet'
             });
+            refillService.urgentRefillStarted = false;
             return;
         }
 
