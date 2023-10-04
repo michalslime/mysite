@@ -105,7 +105,7 @@ function RefillComponent() {
                     {urgentCheckboxText}
                 </label>
             </div >}
-            {checked || urgentRefillInProgress && <div className={getClasses('urgent')} onClick={() => urgentRefill()}>{urgentText}</div>}
+            {(checked || urgentRefillInProgress) && <div className={getClasses('urgent')} onClick={() => urgentRefill()}>{urgentText}</div>}
             {urgentRefillInProgress && <div className={getClasses('urgentRefillInProgress')} onClick={() => cancelUrgentRefill()}> {cancelUrgentText}</div>}
         </>
     )
