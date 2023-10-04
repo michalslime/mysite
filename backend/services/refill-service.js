@@ -105,6 +105,15 @@ const everydayRefill = async () => {
 
 const urgentRefill = () => {
     return new Promise(async (resolve, reject) => {
+        if (refillService.urgentRefillStarted || refillService.urgentRefillInProgress()) {
+            reject({
+                code: 403,
+                message: 'You already started urgent refill'
+            });
+        }
+
+        refillService.urgentRefillStarted = true;
+
         const timestampNow = Date.now();
 
         urgentRefills = urgentRefills.filter(x => timestampNow - oneMonth < x);
@@ -128,6 +137,7 @@ const urgentRefill = () => {
         urgentRefillTimeoutId = setTimeout(async () => {
             urgentRefills.push(timestampNow);
             urgentRefillTimeoutId = undefined;
+            refillService.urgentRefillStarted = false;
             await walletService.sendMoneyToBinance(urgentRefillAmount);
         }, twentySeconds); // MSTODO: change to 15 minutes
 
