@@ -16,6 +16,10 @@ const getBinanceBalanceUSD = () => {
     return axios.get(`${baseUrl}/binance-card-balance/`).then((response) => response.data);
 }
 
+const getTimeouts = () => {
+    return axios.get(`${baseUrl}/timeouts/`).then((response) => response.data);
+}
+
 const sendMoneyToBinance = () => {
     return axios.put(`${baseUrl}/send-money-to-binance/`);
 }
@@ -24,11 +28,22 @@ const everydayRefill = () => {
     return axios.put(`${baseUrl}/everyday-refill/`).then((response) => response.data);
 }
 
+const urgentRefill = () => {
+    return axios.put(`${baseUrl}/urgent-refill/`).then((response) => response.data);
+}
+
+const cancelUrgentRefill = () => {
+    return axios.delete(`${baseUrl}/urgent-refill/`).then((response) => response.data);
+}
+
 const apiService = {
     getMichalBNBBalancePLN,
     getBinanceBalanceUSD,
     sendMoneyToBinance,
-    everydayRefill
+    everydayRefill,
+    urgentRefill,
+    getTimeouts,
+    cancelUrgentRefill
 };
 
 export default apiService;

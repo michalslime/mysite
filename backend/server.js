@@ -91,6 +91,48 @@ app.put('/everyday-refill/', async (req, res) => {
     }
 });
 
+app.put('/urgent-refill/', async (req, res) => {
+    try {
+        await refillService.urgentRefill();
+        res.json({
+            urgentRefillTimeout: refillService.urgentRefillInProgress()
+        });
+    } catch (e) {
+        console.log(e);
+
+        // res.statusMessage = e.message;
+        // res.status(e.code).end();
+
+        res.status(e.code).end(e.message);
+    }
+});
+
+app.delete('/urgent-refill/', async (req, res) => {
+    try {
+        await refillService.cancelUrgentRefill();
+        res.sendStatus(200);
+    } catch (e) {
+        console.log(e);
+
+        // res.statusMessage = e.message;
+        // res.status(e.code).end();
+
+        res.status(e.code).end(e.message);
+    }
+});
+
+
+app.get('/timeouts/', async (req, res) => {
+    try {
+        res.json({
+            urgentRefillTimeout: refillService.urgentRefillInProgress()
+        });
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 server.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })

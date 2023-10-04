@@ -6,7 +6,8 @@ import utils from '../services/utils';
 const classes = {
     everyday: ['card'],
     urgentCheckbox: ['card'],
-    urgent: ['card']
+    urgent: ['card'],
+    urgentRefillInProgress: ['card'],
 }
 
 function RefillComponent() {
@@ -17,6 +18,8 @@ function RefillComponent() {
     const [urgentText, setUrgentText] = useState('Awaryjne uzupełnienie kasy');
     const [checked, setChecked] = useState(false);
     const [showUrgentCheckbox, setShowUrgentCheckbox] = useState(true);
+    const [urgentRefillInProgress, setUrgentRefillInProgress] = useState(false);
+    const [cancelUrgentText, setCancelUrgentText] = useState('Anuluj awaryjne uzupełnienie');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +30,11 @@ function RefillComponent() {
         binanceService.getMichalBNBBalancePLN().then((balance) => {
             setMichalBNBBalancePLN(utils.formatMoney(balance));
         });
-    });
+
+        binanceService.getTimeouts().then((data) => {
+            setUrgentRefillInProgress(data.urgentRefillTimeout);
+        });
+    }, []);
 
     const everydayRefill = () => {
         classes.everyday = classes.everyday.slice(0, 1);
@@ -52,12 +59,32 @@ function RefillComponent() {
         setShowUrgentCheckbox(false);
         setTimeout(() => {
             setChecked(!checked);
-        }, 10000);
+        }, 9000);
     };
 
     const urgentRefill = () => {
-        classes.urgent.push('error');
-        setUrgentText('Nie działa na razie');
+        classes.urgent = classes.urgent.slice(0, 1);
+        setUrgentText('Wykonuję operację...');
+        binanceService.urgentRefill().then((data) => {
+            setUrgentRefillInProgress(data.urgentRefillTimeout);
+            classes.urgent.push('success');
+            setUrgentText('Wykonano, pieniądze dotrą w ciągu 1 godziny');
+        }).catch(err => {
+            const message = utils.extractErrorMessage(err);
+            classes.urgent.push('error');
+            setUrgentText(message);
+        });
+    }
+
+    const cancelUrgentRefill = () => {
+        binanceService.cancelUrgentRefill().then((data) => {
+            classes.urgentRefillInProgress.push('success');
+            setCancelUrgentText('Anulowano, odśwież stronę');
+        }).catch(err => {
+            const message = utils.extractErrorMessage(err);
+            classes.urgentRefillInProgress.push('error');
+            setCancelUrgentText(message);
+        });
     }
 
     return (
@@ -75,6 +102,7 @@ function RefillComponent() {
                 </label>
             </div >}
             {checked && <div className={getClasses('urgent')} onClick={() => urgentRefill()}>{urgentText}</div>}
+            {urgentRefillInProgress && <div className={getClasses('urgentRefillInProgress')} onClick={() => cancelUrgentRefill()}> {cancelUrgentText}</div>}
         </>
     )
 }

@@ -14,8 +14,13 @@ const twentyThreeHours = 23 * 3600000;
 const twelveHours = 12 * 3600000;
 const twentySeconds = 20000;
 const twentyMinutes = 1200000;
+const oneHour = 3600000;
+const oneMonth = 31 * twentyFourHours;
 const everydayRefillAmount = 100;
 const minimumRefillAmount = 20;
+const urgentRefillAmount = 10;
+let urgentRefills = [];
+let urgentRefillTimeoutId;
 
 const checkAndRefillBinanceAccount = () => {
     setInterval(async () => {
@@ -98,9 +103,64 @@ const everydayRefill = async () => {
     });
 }
 
+const urgentRefill = () => {
+    return new Promise(async (resolve, reject) => {
+        const timestampNow = Date.now();
+
+        urgentRefills = urgentRefills.filter(x => timestampNow - oneMonth < x);
+
+        if (urgentRefills.length > 1) {
+            reject({
+                code: 403,
+                message: 'You already used urgent refills twice in past 31 days'
+            });
+        }
+
+        const walletBalance = await walletService.getBNBBalance();
+
+        if (walletBalance < urgentRefillAmount) {
+            reject({
+                code: 403,
+                message: 'You have not enough money on Wallet'
+            });
+        }
+
+        urgentRefillTimeoutId = setTimeout(async () => {
+            urgentRefills.push(timestampNow);
+            urgentRefillTimeoutId = undefined;
+            await walletService.sendMoneyToBinance(urgentRefillAmount);
+        }, twentySeconds); // MSTODO: change to 15 minutes
+
+        resolve();
+    });
+}
+
+const cancelUrgentRefill = () => {
+    return new Promise(async (resolve, reject) => {
+        if (urgentRefillTimeoutId === undefined) {
+            reject({
+                code: 403,
+                message: 'There is no urgent refill in progress'
+            });
+        }
+
+        clearTimeout(urgentRefillTimeoutId);
+        urgentRefillTimeoutId = undefined;
+
+        resolve();
+    });
+}
+
+const urgentRefillInProgress = () => {
+    return urgentRefillTimeoutId !== undefined;
+}
+
 const refillService = {
     checkAndRefillBinanceAccount,
-    everydayRefill
+    everydayRefill,
+    urgentRefill,
+    urgentRefillInProgress,
+    cancelUrgentRefill
 };
 
 module.exports = refillService;
