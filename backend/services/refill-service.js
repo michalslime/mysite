@@ -107,7 +107,7 @@ const everydayRefill = async () => {
 
 const urgentRefill = () => {
     return new Promise(async (resolve, reject) => {
-        if (refillService.urgentRefillStarted || refillService.urgentRefillInProgress()) {
+        if (refillService.urgentRefillStarted) {
             reject({
                 code: 403,
                 message: 'You already started urgent refill'
@@ -166,6 +166,7 @@ const cancelUrgentRefill = () => {
 
         clearTimeout(urgentRefillTimeoutId);
         urgentRefillTimeoutId = undefined;
+        refillService.urgentRefillStarted = false;
 
         resolve();
     });
