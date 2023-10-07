@@ -126,7 +126,7 @@ const urgentRefill = () => {
             const nextPossibleUrgentRefillDate = new Date(urgentRefills[0] + oneMonth);
             reject({
                 code: 403,
-                message: 'You already used urgent refills twice in past 31 days, next possible urgent refill date: ' + nextPossibleUrgentRefillDate.toLocaleDateString()
+                message: `You already used urgent refills twice in past 31 days, next possible urgent refill date: ${nextPossibleUrgentRefillDate.getDate()}/${nextPossibleUrgentRefillDate.getMonth() + 1}/${nextPossibleUrgentRefillDate.getFullYear()}` 
             });
             refillService.urgentRefillStarted = false;
             return;

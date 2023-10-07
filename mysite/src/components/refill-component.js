@@ -23,6 +23,11 @@ function RefillComponent() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        classes.everyday = classes.everyday.slice(0, 1);
+        classes.urgentCheckbox = classes.urgentCheckbox.slice(0, 1);
+        classes.urgent = classes.urgent.slice(0, 1);
+        classes.urgentRefillInProgress = classes.urgentRefillInProgress.slice(0, 1);
+
         binanceService.getBinanceBalanceUSD().then((balance) => {
             setBalancePLN(utils.formatMoney(balance.balancePLN));
         });
