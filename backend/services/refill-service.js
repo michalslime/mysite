@@ -81,9 +81,12 @@ const everydayRefill = async () => {
                 code: 403,
                 message: 'You already refilled today'
             });
+            return;
         }
 
         const balance = await binanceService.getBNBBalance();
+
+        console.log('Checking balance...', balance.balancePLN);
 
         if (balance.balancePLN < everydayRefillAmount) {
             const diff = everydayRefillAmount - balance.balancePLN;
