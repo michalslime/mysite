@@ -72,39 +72,61 @@ const checkAndRefillBinanceAccount = () => {
 
 const everydayRefill = async () => {
     return new Promise(async (resolve, reject) => {
-        const date = new Date();
+        try {
+            const date = new Date();
 
-        const day = date.getDate();
+            const day = date.getDate();
 
-        if (day === lastEverydayRefillDay) {
+            if (day === lastEverydayRefillDay) {
+                reject({
+                    code: 403,
+                    message: 'You already refilled today'
+                });
+                return;
+            }
+
+            const balance = await binanceService.getBNBBalance();
+
+            console.log('Checking balance...', balance.balancePLN);
+
+            if (balance.balancePLN < everydayRefillAmount) {
+                const diff = everydayRefillAmount - balance.balancePLN;
+                let refillAmount = diff < minimumRefillAmount ? minimumRefillAmount : diff;
+
+                const walletBNBBalanceString = await walletService.getBNBBalance();
+                const walletBNBBalance = parseFloat(walletBNBBalanceString);
+
+                refillAmount = refillAmount > walletBNBBalance ? walletBNBBalance - 5 : refillAmount;
+
+                if (refillAmount < minimumRefillAmount) {
+                    reject({
+                        code: 403,
+                        message: 'Insufficent funds'
+                    });
+                    return;
+                }
+
+                await walletService.sendMoneyToBinance(refillAmount);
+
+                lastEverydayRefillDay = day;
+
+                resolve();
+                return;
+            } else {
+                reject({
+                    code: 403,
+                    message: 'You have enough money'
+                });
+                return;
+            }
+        } catch (e) {
+            console.log('Error');
             reject({
                 code: 403,
-                message: 'You already refilled today'
+                message: 'An error occured'
             });
             return;
-        }
-
-        const balance = await binanceService.getBNBBalance();
-
-        console.log('Checking balance...', balance.balancePLN);
-
-        if (balance.balancePLN < everydayRefillAmount) {
-            const diff = everydayRefillAmount - balance.balancePLN;
-            const refillAmount = diff < minimumRefillAmount ? minimumRefillAmount : diff;
-
-            await walletService.sendMoneyToBinance(refillAmount);
-
-            lastEverydayRefillDay = day;
-
-            resolve();
-            return;
-        } else {
-            reject({
-                code: 403,
-                message: 'You have enough money'
-            });
-            return;
-        }
+        }   
     });
 }
 
@@ -129,7 +151,7 @@ const urgentRefill = () => {
             const nextPossibleUrgentRefillDate = new Date(urgentRefills[0] + oneMonth);
             reject({
                 code: 403,
-                message: `You already used urgent refills twice in past 31 days, next possible urgent refill date: ${nextPossibleUrgentRefillDate.getDate()}/${nextPossibleUrgentRefillDate.getMonth() + 1}/${nextPossibleUrgentRefillDate.getFullYear()}` 
+                message: `You already used urgent refills twice in past 31 days, next possible urgent refill date: ${nextPossibleUrgentRefillDate.getDate()}/${nextPossibleUrgentRefillDate.getMonth() + 1}/${nextPossibleUrgentRefillDate.getFullYear()}`
             });
             refillService.urgentRefillStarted = false;
             return;
