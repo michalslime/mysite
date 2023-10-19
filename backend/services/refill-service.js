@@ -14,11 +14,12 @@ const twentyThreeHours = 23 * 3600000;
 const twelveHours = 12 * 3600000;
 const twentySeconds = 20000;
 const twentyMinutes = 1200000;
+const tenMinutes = 60000 * 10;
 const oneHour = 3600000;
 const oneMonth = 31 * twentyFourHours;
 const everydayRefillAmount = 100;
 const minimumRefillAmount = 20;
-const urgentRefillAmount = 10;
+const urgentRefillAmount = 200;
 let urgentRefills = [];
 let urgentRefillTimeoutId;
 
@@ -174,7 +175,7 @@ const urgentRefill = () => {
             urgentRefillTimeoutId = undefined;
             refillService.urgentRefillStarted = false;
             await walletService.sendMoneyToBinance(urgentRefillAmount);
-        }, twentySeconds); // MSTODO: change to 15 minutes
+        }, tenMinutes);
 
         resolve();
         return;
