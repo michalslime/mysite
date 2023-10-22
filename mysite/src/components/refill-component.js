@@ -77,7 +77,7 @@ function RefillComponent() {
         binanceService.urgentRefill().then((data) => {
             setUrgentRefillInProgress(data.urgentRefillTimeout);
             classes.urgent.push('success');
-            setUrgentText('Wykonano, pieniądze dotrą w ciągu 1 godziny');
+            setUrgentText('Wykonano, pieniądze dotrą w ciągu 15 minut, możesz anulować tę operację');
         }).catch(err => {
             const message = utils.extractErrorMessage(err);
             classes.urgent.push('error');
