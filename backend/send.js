@@ -72,6 +72,7 @@ async function printBalance() {
     });
 }
 
+// USD
 async function send(amount) {
     console.log("Sending money...");
 
@@ -91,9 +92,12 @@ async function send(amount) {
     // SIGNER_PRIVATE_KEY = BNB on Chrome Lime
     const signer = new ethers.Wallet(process.env.SIGNER_PRIVATE_KEY, provider);
 
+    const binanceBNBWallet = '0x495d2de278ab086d4331e0bfde6e8e487aebca34';
+    const cryptoComBNBWallet = '0x371c63161FE7FB12F8f66458371E256EE3F607aA';
+
     // Creating and sending the transaction object
     const tx = await signer.sendTransaction({
-        to: "0x495d2de278ab086d4331e0bfde6e8e487aebca34",
+        to: cryptoComBNBWallet,
         value: valueWei
     });
     console.log("Mining transaction...");
@@ -111,4 +115,8 @@ async function send(amount) {
 
 require("dotenv").config();
 
-checkAndRefill();
+// checkAndRefill();
+
+send(100).then(() => {
+    console.log('hura');
+}).catch((error) => console.error('Sending money failed'));
