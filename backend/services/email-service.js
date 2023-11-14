@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const baseUrl = process.env.APP_BASE_URL;
+const emailPass = process.env.EMAIL_PASS;
 
 const transporter = nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
@@ -8,7 +9,7 @@ const transporter = nodemailer.createTransport({
     secure: false, // upgrade later with STARTTLS
     auth: {
         user: "michal.s.limeacademy@gmail.com",
-        pass: "gmh1Y8HZPRqn2VFy",
+        pass: emailPass,
     }
 });
 
