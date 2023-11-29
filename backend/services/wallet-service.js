@@ -8,7 +8,7 @@ const sendMoneyToBinance = async (amountPLN) => {
 
         const usdPLNPrice = await binanceService.getUSDPLN();
         const amountUSD = amountPLN / usdPLNPrice;
-        
+
         const bnb = amountUSD / price;
 
         const valueWei = ethers.parseUnits(bnb.toString(), "ether");
@@ -61,7 +61,7 @@ const sendMoneyToCryptoCom = async (amountPLN) => {
 
         const usdPLNPrice = await binanceService.getUSDPLN();
         const amountUSD = amountPLN / usdPLNPrice;
-        
+
         const matic = amountUSD / price;
 
         const valueWei = ethers.parseUnits(matic.toString(), "ether");
@@ -73,22 +73,29 @@ const sendMoneyToCryptoCom = async (amountPLN) => {
         // SIGNER_PRIVATE_KEY = Frugal on Ubuntu
         const signer = new ethers.Wallet(process.env.SIGNER_PRIVATE_KEY, provider);
 
-        signer.sendTransaction({
+        const transactionData = {
             to: "0x371c63161FE7FB12F8f66458371E256EE3F607aA", // crypto com polygon address
             value: valueWei,
-        })
-            .then(tx => {
+            gasLimit: 0
+        };
+
+        signer.estimateGas(transactionData).then((estimatedGasLimit) => {
+            transactionData.gasLimit = estimatedGasLimit;
+
+            signer.sendTransaction(transactionData).then(tx => {
                 console.log(`Transaction id: ${tx.hash}, ${valueWei} WEI, ${amountPLN} PLN sending...`);
                 return tx.wait();
-            })
-            .then((receipt) => {
-                console.log('Sent!');
-                resolve();
-            })
-            .catch((e) => {
-                console.error(e);
-                reject('Something wrong')
-            });
+            }).then((receipt) => {
+                    console.log('Sent!');
+                    resolve();
+                })
+                .catch((e) => {
+                    console.error(e);
+                    reject('Something wrong')
+                });
+        }).catch((error) => {
+            console.error('Error estimating gas limit:', error);
+        });
     })
 }
 
