@@ -15,9 +15,12 @@ const calculateX = async (amountUSD, amountWei, exchangeRate) => {
 }
 
 const calculateAmountUsd = (amountWei, exchangeRate) => {
+    const tenTo5 = FixedNumber.fromString('100000');
     const tenTo18 = FixedNumber.fromString('1000000000000000000');
-    const amountWeiFN = FixedNumber.fromString(amountWei);
-    const amountCrypto = amountWeiFN.divUnsafe(tenTo18);
+    const amountWeiDiv10000 = amountWei.substring(0, amountWei.length - 5); // stupid workaround for "overflow" error
+    const amountWeiFN = FixedNumber.fromString(amountWeiDiv10000);
+    const x = amountWeiFN.divUnsafe(tenTo18);
+    const amountCrypto = x.mulUnsafe(tenTo5);
     
     return amountCrypto * exchangeRate;
 }

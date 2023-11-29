@@ -8,6 +8,10 @@ const jsonHeaders = {
     }
 };
 
+const getFrugalMATICBalancePLN = () => {
+    return axios.get(`${baseUrl}/wallet/matic/pln`).then((response) => response.data);
+}
+
 const getMichalBNBBalancePLN = () => {
     return axios.get(`${baseUrl}/wallet/bnb/pln`).then((response) => response.data);
 }
@@ -28,6 +32,10 @@ const everydayRefill = () => {
     return axios.put(`${baseUrl}/everyday-refill/`).then((response) => response.data);
 }
 
+const everydayRefillMatic = () => {
+    return axios.put(`${baseUrl}/everyday-refill/matic`).then((response) => response.data);
+}
+
 const urgentRefill = () => {
     return axios.put(`${baseUrl}/urgent-refill/`).then((response) => response.data);
 }
@@ -43,7 +51,9 @@ const apiService = {
     everydayRefill,
     urgentRefill,
     getTimeouts,
-    cancelUrgentRefill
+    cancelUrgentRefill,
+    getFrugalMATICBalancePLN,
+    everydayRefillMatic
 };
 
 export default apiService;

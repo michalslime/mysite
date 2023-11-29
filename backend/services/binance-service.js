@@ -28,6 +28,7 @@ const getBNBBalance = () => {
                 reject("Unable to retrive BNB price");
             })
         }).catch((e) => {
+            console.log(e);
             reject("Unable to retrive BNB balance");
         })
     });

@@ -127,7 +127,52 @@ const everydayRefill = async () => {
                 message: 'An error occured'
             });
             return;
-        }   
+        }
+    });
+}
+
+const everydayRefillMatic = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const date = new Date();
+
+            const day = date.getDate();
+
+            if (day === lastEverydayRefillDay) {
+                reject({
+                    code: 403,
+                    message: 'You already refilled today'
+                });
+                return;
+            }
+
+            const walletMaticBalanceString = await walletService.getMATICBalance();
+            const walletMATICBalance = parseFloat(walletMaticBalanceString);
+
+            const refillAmount = everydayRefillAmount > walletMATICBalance ? walletMATICBalance - 5 : everydayRefillAmount;
+
+            if (refillAmount < minimumRefillAmount) {
+                reject({
+                    code: 403,
+                    message: 'Insufficent funds'
+                });
+                return;
+            }
+
+            await walletService.sendMoneyToCryptoCom(refillAmount);
+
+            lastEverydayRefillDay = day;
+
+            resolve();
+            return;
+        } catch (e) {
+            console.log('Error');
+            reject({
+                code: 403,
+                message: 'An error occured'
+            });
+            return;
+        }
     });
 }
 
@@ -209,7 +254,8 @@ const refillService = {
     everydayRefill,
     urgentRefill,
     urgentRefillInProgress,
-    cancelUrgentRefill
+    cancelUrgentRefill,
+    everydayRefillMatic
 };
 
 module.exports = refillService;

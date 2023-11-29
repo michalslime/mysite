@@ -50,6 +50,17 @@ app.get('/wallet/bnb/pln', async (req, res) => {
     }
 });
 
+app.get('/wallet/matic/pln', async (req, res) => {
+    try {
+        const result = await walletService.getMATICBalance();
+
+        res.json(result);
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 app.get('/send-email-with-balance/', async (req, res) => {
     try {
         const balance = await binanceService.getBNBBalance();
@@ -80,6 +91,20 @@ app.put('/send-money-to-binance/', async (req, res) => {
 app.put('/everyday-refill/', async (req, res) => {
     try {
         await refillService.everydayRefill();
+        res.sendStatus(200);
+    } catch (e) {
+        console.log(e);
+
+        // res.statusMessage = e.message;
+        // res.status(e.code).end();
+
+        res.status(e.code).end(e.message);
+    }
+});
+
+app.put('/everyday-refill/matic', async (req, res) => {
+    try {
+        await refillService.everydayRefillMatic();
         res.sendStatus(200);
     } catch (e) {
         console.log(e);

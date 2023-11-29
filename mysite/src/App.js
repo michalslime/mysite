@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import BinanceComponent from './components/binance-component';
 import RefillComponent from './components/refill-component';
+import RefillCryptoComComponent from './components/refill-crytpocom-component';
 import { Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       <Routes>
           <Route path='/' element={<BinanceComponent />} />
           <Route path='/refill' element={<RefillComponent />} />    
+          <Route path='/cryptocom/refill' element={<RefillCryptoComComponent/>} />
         </Routes>
     </div>
   );

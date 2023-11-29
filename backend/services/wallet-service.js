@@ -55,6 +55,57 @@ const getBNBBalance = async () => {
     return (balanceUsd * usdPLNPrice).toString();
 }
 
+const sendMoneyToCryptoCom = async (amountPLN) => {
+    return new Promise(async (resolve, reject) => {
+        const price = 0.76;
+
+        const usdPLNPrice = await binanceService.getUSDPLN();
+        const amountUSD = amountPLN / usdPLNPrice;
+        
+        const matic = amountUSD / price;
+
+        const valueWei = ethers.parseUnits(matic.toString(), "ether");
+
+        // Configuring the connection to an Ethereum node
+        const provider = new ethers.JsonRpcProvider("https://polygon-mainnet.infura.io/v3/0217b384eae940609e9751c2bff6bcc0");
+
+        // Creating a signing account from a private key
+        // SIGNER_PRIVATE_KEY = Frugal on Ubuntu
+        const signer = new ethers.Wallet(process.env.SIGNER_PRIVATE_KEY, provider);
+
+        signer.sendTransaction({
+            to: "0x371c63161FE7FB12F8f66458371E256EE3F607aA", // crypto com polygon address
+            value: valueWei,
+        })
+            .then(tx => {
+                console.log(`Transaction id: ${tx.hash}, ${valueWei} WEI, ${amountPLN} PLN sending...`);
+                return tx.wait();
+            })
+            .then((receipt) => {
+                console.log('Sent!');
+                resolve();
+            })
+            .catch((e) => {
+                console.error(e);
+                reject('Something wrong')
+            });
+    })
+}
+
+const getMATICBalance = async () => {
+    const provider = new ethers.JsonRpcProvider("https://rpc-mainnet.maticvigil.com/");
+
+    const balance = await provider.getBalance("0xb8dfD79f5c99ffA3Cb4B25Bcb2Aee102A79c179f");
+
+    const exchangeRate = 0.76; // MATIC to USD
+
+    const balanceUsd = calculator.calculateAmountUsd(balance.toString(), exchangeRate)
+
+    const usdPLNPrice = await binanceService.getUSDPLN();
+
+    return (balanceUsd * usdPLNPrice).toString();
+}
+
 const calculateGas = (receipt) => {
     // console.log(receipt);
     // const xxx = FixedNumber.fromValue(receipt.gasUsed * receipt.gasPrice);
@@ -67,7 +118,9 @@ const calculateGas = (receipt) => {
 
 const walletService = {
     sendMoneyToBinance,
-    getBNBBalance
+    getBNBBalance,
+    getMATICBalance,
+    sendMoneyToCryptoCom
 };
 
 module.exports = walletService;
