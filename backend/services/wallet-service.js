@@ -1,5 +1,6 @@
 const { ethers, FixedNumber } = require("ethers");
 const binanceService = require('../services/binance-service');
+const emailService = require('../services/email-service');
 const calculator = require('../utils/calculator');
 
 const sendMoneyToBinance = async (amountPLN) => {
@@ -76,7 +77,8 @@ const sendMoneyToCryptoCom = async (amountPLN) => {
         const transactionData = {
             to: "0x371c63161FE7FB12F8f66458371E256EE3F607aA", // crypto com polygon address
             value: valueWei,
-            gasLimit: 0
+            gasLimit: 0,
+            gasPrice: ethers.parseUnits('200', 'gwei')
         };
 
         signer.estimateGas(transactionData).then((estimatedGasLimit) => {
@@ -85,8 +87,22 @@ const sendMoneyToCryptoCom = async (amountPLN) => {
             signer.sendTransaction(transactionData).then(tx => {
                 console.log(`Transaction id: ${tx.hash}, ${valueWei} WEI, ${amountPLN} PLN sending...`);
                 return tx.wait();
-            }).then((receipt) => {
+            }).then((receipt) => {                    
                     console.log('Sent!');
+                    console.log('Transaction details: ');
+                    console.log('Transaction fee: ' + ethers.formatEther(receipt.fee) + ' MATIC');
+
+                    const gasPrice = receipt.gasPrice;
+                    const gasUsed = receipt.gasUsed;
+                    const overallFee = gasPrice*gasUsed;
+                    const overallFeeHuman = ethers.formatEther(overallFee);
+
+                    if (overallFeeHuman > 0.01) {
+                        emailService.sendWarningEmailAsync('Transaction fee jest powyżej 0.01 MATIC');
+                    }
+
+                    console.log('Overall Fee:', ethers.formatEther(overallFee), 'MATIC');
+
                     resolve();
                 })
                 .catch((e) => {

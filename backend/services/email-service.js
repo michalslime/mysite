@@ -75,6 +75,25 @@ const sendErrorEmailAsync = (message) => {
     return new Promise((resolve, reject) => {
         const date = new Date();
         mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Error! ${message}`;
+        mailOptions.html = '';
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                reject();
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve();
+            }
+        });
+    })
+}
+
+const sendWarningEmailAsync = (message) => {
+    return new Promise((resolve, reject) => {
+        const date = new Date();
+        mailOptions.subject = `[${date.toLocaleString("pl-PL")}] Warning! ${message}`;
+        mailOptions.html = '';
 
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
@@ -92,7 +111,8 @@ const emailService = {
     sendSuccessEmailAsync,
     sendBalanceEmailAsync,
     sendStartMessageAsync,
-    sendErrorEmailAsync
+    sendErrorEmailAsync,
+    sendWarningEmailAsync
 };
 
 module.exports = emailService;

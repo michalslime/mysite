@@ -44,7 +44,7 @@ const getBNBPrice = () => {
 
 const getUSDPLN = () => {
     return new Promise((resolve, reject) => {
-        resolve(4.2); // USDPLN is generally around 4.2 zł, this should be updated if price goes below 4 permamently
+        resolve(3.96); // USDPLN is generally around 4 zł, this should be updated if price goes below 4 permamently
     });
 }
 
