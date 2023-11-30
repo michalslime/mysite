@@ -22,6 +22,7 @@ const minimumRefillAmount = 20;
 const urgentRefillAmount = 200;
 let urgentRefills = [];
 let urgentRefillTimeoutId;
+let pendingEverydayRefill = false;
 
 const checkAndRefillBinanceAccount = () => {
     setInterval(async () => {
@@ -134,11 +135,22 @@ const everydayRefill = async () => {
 const everydayRefillMatic = async () => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (pendingEverydayRefill) {
+                reject({
+                    code: 403,
+                    message: 'There is pending refill'
+                });
+                return;
+            }
+
+            pendingEverydayRefill = true;
+
             const date = new Date();
 
             const day = date.getDate();
 
             if (day === lastEverydayRefillDay) {
+                pendingEverydayRefill = false;
                 reject({
                     code: 403,
                     message: 'You already refilled today'
@@ -152,6 +164,7 @@ const everydayRefillMatic = async () => {
             const refillAmount = everydayRefillAmount > walletMATICBalance ? walletMATICBalance - 5 : everydayRefillAmount;
 
             if (refillAmount < minimumRefillAmount) {
+                pendingEverydayRefill = false;
                 reject({
                     code: 403,
                     message: 'Insufficent funds'
@@ -162,11 +175,12 @@ const everydayRefillMatic = async () => {
             await walletService.sendMoneyToCryptoCom(refillAmount);
 
             lastEverydayRefillDay = day;
+            pendingEverydayRefill = false;
 
             resolve();
             return;
         } catch (e) {
-            console.log('Error');
+            pendingEverydayRefill = false;
             reject({
                 code: 403,
                 message: 'An error occured'
