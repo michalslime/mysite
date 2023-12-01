@@ -43,7 +43,7 @@ const sendMoneyToBinance = async (amountPLN) => {
 const getBNBBalance = async () => {
     const provider = new ethers.JsonRpcProvider("https://bsc-dataseed.binance.org");
 
-    const balance = await provider.getBalance("0x045Ab0dff3A51f17588fceb5dAcE31beF1Ff3a00");
+    const balance = await provider.getBalance("0xb8dfD79f5c99ffA3Cb4B25Bcb2Aee102A79c179f");
 
     const exchangeRate = await binanceService.getBNBPrice();
 

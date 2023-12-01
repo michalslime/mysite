@@ -99,7 +99,7 @@ function RefillComponent() {
     return (
         <>
             <div className='card'>Binance card: {balancePLN} PLN</div>
-            <div className='card'>MichalBNB: {michalBNBBalancePLN} PLN</div>
+            <div className='card'>Frugal BNB: {michalBNBBalancePLN} PLN</div>
             <div className='card' onClick={() => navigate('/')}>Wstecz</div>
             <div className={getClasses('everyday')} onClick={() => everydayRefill()}>{everydayRefillText}</div>
             {!checked && !urgentRefillInProgress && <div className={getClasses('urgentCheckbox')} onClick={() => handleChange()} >
