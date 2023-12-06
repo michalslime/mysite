@@ -20,7 +20,7 @@ const twentyFourHours = 24 * 3600000;
 app.get('/binance-card-balance/', async (req, res) => {
     try {
         const result = await binanceService.getBNBBalance();
-
+        
         res.json(result);
     } catch (e) {
         console.log(e);
