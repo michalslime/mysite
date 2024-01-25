@@ -77,7 +77,7 @@ const sendMoneyToCryptoCom = async (amountPLN) => {
         const transactionData = {
             to: "0x371c63161FE7FB12F8f66458371E256EE3F607aA", // crypto com polygon address
             value: valueWei,
-            // gasPrice: ethers.parseUnits('200', 'gwei')
+            gasPrice: ethers.parseUnits('200', 'gwei')
         };
 
         signer.sendTransaction(transactionData).then(tx => {
