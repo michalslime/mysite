@@ -58,7 +58,7 @@ const getBNBBalance = async () => {
 
 const sendMoneyToCryptoCom = async (amountPLN) => {
     return new Promise(async (resolve, reject) => {
-        const price = 0.76;
+        const price = 0.73;
 
         const usdPLNPrice = await binanceService.getUSDPLN();
         const amountUSD = amountPLN / usdPLNPrice;
@@ -115,7 +115,7 @@ const getMATICBalance = async () => {
 
     const balance = await provider.getBalance("0xb8dfD79f5c99ffA3Cb4B25Bcb2Aee102A79c179f");
 
-    const exchangeRate = 0.76; // MATIC to USD
+    const exchangeRate = 0.73; // MATIC to USD
 
     const balanceUsd = calculator.calculateAmountUsd(balance.toString(), exchangeRate)
 
