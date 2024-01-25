@@ -82,6 +82,8 @@ const sendMoneyToCryptoCom = async (amountPLN) => {
 
         signer.sendTransaction(transactionData).then(tx => {
             console.log(`Transaction id: ${tx.hash}, ${valueWei} WEI, ${amountPLN} PLN sending...`);
+            console.log(`Value in WEI: ${valueWei} WEI, ${amountPLN} PLN sending...`);
+            console.log(`${amountPLN} PLN sending...`);
             return tx.wait();
         }).then((receipt) => {
             console.log('Sent!');
